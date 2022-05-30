@@ -7,7 +7,7 @@
 
 	<groupId>com.URPlus</groupId>
 	<artifactId>SmartTrain</artifactId>
-	<version>1.0-SnapShot</version>
+	<version>1.0.2.Build04</version>
 	<name>SmartTrain</name>
 	<packaging>bundle</packaging>
 
