@@ -62,21 +62,33 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 		updateKey();
 	}
 	@Override
-	public void buildUI(JPanel panel,final ContributionProvider<STProgramNodeContribution> provider) {
-		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+	public void buildUI(JPanel panel,final ContributionProvider<STProgramNodeContribution> provider) { //Override表示是必须要实现的函数
+		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));//设置布局管理器，如果Y_AXIS表示组建从上到下依次排列;还有其他类型例如FlowLayout, BorderLayout, GridLayout.
+//		panel.setLayout(null); //如果希望任意摆放组件位置，使用绝对布局
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
-		ipAddress.setHorizontalAlignment(JTextField.RIGHT);
+		ipAddress.setHorizontalAlignment(JTextField.RIGHT); //如果是文本，需要靠右; 如果是数字，需要靠左
 		JTabbedPane jTabbedPane = new JTabbedPane();
 		p1.setLayout(new BoxLayout(p1,BoxLayout.Y_AXIS));
 		p1.add(createSpacer(0, 20));
-		p1.add(createDescription(COBO_KEY));
-		p1.add(createVerticalSpacing());
-		p1.add(createIOComboBox(ioComboBox, provider));
+		p1.add(createDescription(COBO_KEY));  //添加一个描述行，具体函数申明在下方
+		p1.add(createVerticalSpacing()); //添加Y轴方向空间，值由style实例确定。
+		p1.add(createIOComboBox(ioComboBox, provider)); //添加ComboBox组件，具体函数申明在下方
+		
+//		tempBox = createDurationSlider(durationSlider, 0, 20, provider);   
+//		tempBox.setBounds(40, 120, 300, 30);
+//		panel.add(tempBox);
+//		tempBox = createIOComboBox(ioComboBox, provider);
+//		tempBox.setBounds(40, 70, 300, 30);
+//		panel.add(tempBox);
+//		tempBox = createIcon(LOGO_ICON);
+//		tempBox.setBounds(360, 20, 200, 50);
+//		panel.add(tempBox);
+		
 		p1.add(createVerticalSpacing());
 		p1.add(createDescription(DURA_KEY));
 		p1.add(createVerticalSpacing());
-		p1.add(createDurationSlider(durationSlider, 0, 10, provider));
+		p1.add(createDurationSlider(durationSlider, 0, 10, provider));  //使用绝对布局方法添加组件
 		p1.add(createVerticalSpacing());
 		p1.add(createLabelInputField(IPADDRESS_KEY, ipAddress, new MouseAdapter() {  //添加鼠标按钮事件触发
 			public void mousePressed(MouseEvent e) {
@@ -91,49 +103,6 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 				System.out.println("reset button being clicked!!!");
 			}
 		}));
-		p1.add(createSpacer(0, 100));
-		p1.add(createIcon(LOGO_ICON));
-		jTabbedPane.add("intruction_demo",p1);
-		jTabbedPane.add("configuration_vide",p2);
-		
-		panel.add(jTabbedPane);
-	}
-	/*@Override
-	public void buildUI(JPanel panel, final ContributionProvider<STProgramNodeContribution> provider) {//Override表示是必须要实现的函数
-		// TODO Auto-generated method stub
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); //设置布局管理器，如果Y_AXIS表示组建从上到下依次排列;还有其他类型例如FlowLayout, BorderLayout, GridLayout.
-//		panel.setLayout(null); //如果希望任意摆放组件位置，使用绝对布局
-		ipAddress.setHorizontalAlignment(JTextField.RIGHT);  //如果是文本，需要靠右; 如果是数字，需要靠左
-		panel.add(createDescription(COBO_KEY)); //添加一个描述行，具体函数申明在下方
-		panel.add(createVerticalSpacing());  //添加Y轴方向空间，值由style实例确定。
-		panel.add(createIOComboBox(ioComboBox, provider)); //添加ComboBox组件，具体函数申明在下方
-//		tempBox = createDurationSlider(durationSlider, 0, 20, provider);   //使用绝对布局方法添加组件
-//		tempBox.setBounds(40, 120, 300, 30);
-//		panel.add(tempBox);
-//		tempBox = createIOComboBox(ioComboBox, provider);
-//		tempBox.setBounds(40, 70, 300, 30);
-//		panel.add(tempBox);
-//		tempBox = createIcon(LOGO_ICON);
-//		tempBox.setBounds(360, 20, 200, 50);
-//		panel.add(tempBox);
-		panel.add(createVerticalSpacing());
-		panel.add(createDescription(DURA_KEY));
-		panel.add(createVerticalSpacing());
-		panel.add(createDurationSlider(durationSlider, 0, 10, provider));
-		panel.add(createVerticalSpacing());
-		panel.add(createLabelInputField(IPADDRESS_KEY, ipAddress, new MouseAdapter() {  //添加鼠标按钮事件触发
-			public void mousePressed(MouseEvent e) {
-				KeyboardTextInput keyboardInput = provider.get().getKeyboardForIpAddress(); //启动IP地址键盘，具体函数在contribution中申明 
-				keyboardInput.show(ipAddress,provider.get().getCallbackForIpAddress()); //调用回调函数
-			}
-		}));
-		panel.add(createVerticalSpacing());
-		panel.add(createButton(RESET_KEY, resetButton, provider, new ActionListener() {  //添加按钮的鼠标按下时间触发，并调用在contribution中申明的onResetClicked函数
-			public void actionPerformed(ActionEvent e) {
-				provider.get().onResetClicked();
-				System.out.println("reset button being clicked!!!");
-			}
-		}));
 //		panel.add(createVerticalSpacing());
 //		panel.add(createRatioButton("radio_option_1", radioButton_1)); //增加单选框示例
 //		panel.add(createVerticalSpacing());
@@ -142,10 +111,17 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 //		ButtonGroup group = new ButtonGroup(); //单选框的互斥逻辑需要设立ButtonGroup
 //		group.add(radioButton_1);
 //		group.add(radioButton_2);
+		
+		p1.add(createSpacer(0, 100));
+		p1.add(createIcon(LOGO_ICON));  //面板添加图片示例
+		JLabel jLabel = new JLabel("This tab is left intentionally for adding new element!");
+		p2.add(jLabel);
+		jTabbedPane.add("intruction_demo",p1);
+		jTabbedPane.add("configuration_vide",p2);
+		
+		panel.add(jTabbedPane);
+	}
 
-		panel.add(createSpacer(0, 100));
-		panel.add(createIcon(LOGO_ICON)); //面板添加图片示例
-	}*/
 
 	public void setIOComBoxItems(Integer[] items) { //ComboBox菜单设置下拉选项的函数,用于Contribution中的[Override]OpenView函数使用
 		ioComboBox.removeAllItems();
