@@ -7,7 +7,11 @@
 
 	<groupId>com.URPlus</groupId>
 	<artifactId>SmartTrain</artifactId>
+<<<<<<< HEAD
 	<version>1.0.2.Build02</version>
+=======
+	<version>1.0.2.Build06</version>
+>>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
 	<name>SmartTrain</name>
 	<packaging>bundle</packaging>
 
