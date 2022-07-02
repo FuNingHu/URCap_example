@@ -27,15 +27,26 @@ public class STProgramNodeService implements SwingProgramNodeService<STProgramNo
 	@Override
 	public String getTitle(Locale locale) {//Override表示是必须要实现的函数
 		// TODO Auto-generated method stub
-		return "Smart Training";//定义ProgramNode中URCap标签下的标题
+		String title = "Smart Train";
+		if ("en".equals(locale.getLanguage())) //示例：根据系统语言设定显示标题
+			{title = "Smart Train";}
+		else if ("zh".equals(locale.getLanguage()))
+			{title = "智能培训";}
+		else if ("tw".equals(locale.getLanguage()))
+			{title ="智能培訓";}
+		else if("fr".equals(locale.getLanguage()))
+			{title = "Malin Formation";}
+		System.out.println("current local: "+locale.getLanguage().toString());
+		return title;//定义ProgramNode中URCap标签下的标题
 	}
 
 	@Override
 	public STProgramNodeView createView(ViewAPIProvider apiProvider) {//Override表示是必须要实现的函数 
 		// TODO Auto-generated method stub
 		SystemAPI systemAPI = apiProvider.getSystemAPI(); 
+		Locale local = systemAPI.getSystemSettings().getLocalization().getLocaleForProgrammingLanguage();
 		Style style = systemAPI.getSoftwareVersion().getMajorVersion() >=5? new V5Style() : new V3Style(); //获得系统版本，并匹配不同格式
-		return new STProgramNodeView(apiProvider, style);//返回ProgramNodeView 实例
+		return new STProgramNodeView(apiProvider, style, local);//返回ProgramNodeView 实例
 	}
 
 	@Override
