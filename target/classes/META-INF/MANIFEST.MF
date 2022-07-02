@@ -1,9 +1,5 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
-Bnd-LastModified: 1653890233403
-=======
-Bnd-LastModified: 1653896870735
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
+Bnd-LastModified: 1656727933042
 Build-Jdk: 1.8.0_292
 Built-By: ur
 Bundle-Activator: com.URPlus.SmartTrain.impl.Activator
@@ -16,23 +12,20 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SmartTrain
 Bundle-SymbolicName: com.URPlus.SmartTrain
 Bundle-Vendor: URCaps R us Inc.
-<<<<<<< HEAD
-Bundle-Version: 1.0.2.Build02
-=======
-Bundle-Version: 1.0.2.Build06
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
+Bundle-Version: 1.0.3.Build05
 Created-By: Apache Maven Bundle Plugin
 Import-Package: com.ur.urcap.api.contribution;version="[1.9,2)",com.ur.u
  rcap.api.contribution.program;version="[1.9,2)",com.ur.urcap.api.contri
  bution.program.swing;version="[1.8,2)",com.ur.urcap.api.domain;version=
  "[1.10,2)",com.ur.urcap.api.domain.data;version="[1.10,2)",com.ur.urcap
- .api.domain.script;version="[1.8,2)",com.ur.urcap.api.domain.system;ver
- sion="[1.8,2)",com.ur.urcap.api.domain.system.localization;version="[1.
- 8,2)",com.ur.urcap.api.domain.undoredo;version="[1.8,2)",com.ur.urcap.a
- pi.domain.userinteraction;version="[1.9,2)",com.ur.urcap.api.domain.use
- rinteraction.inputvalidation;version="[1.8,2)",com.ur.urcap.api.domain.
- userinteraction.keyboard;version="[1.8,2)",javax.swing,javax.swing.even
- t,org.osgi.framework;version="[1.6,2)"
+ .api.domain.io;version="[1.8,2)",com.ur.urcap.api.domain.script;version
+ ="[1.8,2)",com.ur.urcap.api.domain.system;version="[1.8,2)",com.ur.urca
+ p.api.domain.system.localization;version="[1.8,2)",com.ur.urcap.api.dom
+ ain.undoredo;version="[1.8,2)",com.ur.urcap.api.domain.userinteraction;
+ version="[1.9,2)",com.ur.urcap.api.domain.userinteraction.inputvalidati
+ on;version="[1.8,2)",com.ur.urcap.api.domain.userinteraction.keyboard;v
+ ersion="[1.8,2)",javax.swing,javax.swing.event,org.osgi.framework;versi
+ on="[1.6,2)"
 Tool: Bnd-2.1.0.20130426-122213
 URCapCompatibility-CB3: true
 URCapCompatibility-eSeries: true

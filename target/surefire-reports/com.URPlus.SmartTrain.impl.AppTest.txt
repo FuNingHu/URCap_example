@@ -1,8 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.URPlus.SmartTrain.impl.AppTest
 -------------------------------------------------------------------------------
-<<<<<<< HEAD
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.104 s - in com.URPlus.SmartTrain.impl.AppTest
-=======
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 s - in com.URPlus.SmartTrain.impl.AppTest
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.054 s - in com.URPlus.SmartTrain.impl.AppTest

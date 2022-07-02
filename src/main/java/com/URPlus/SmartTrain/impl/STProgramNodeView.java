@@ -3,6 +3,8 @@ package com.URPlus.SmartTrain.impl;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -17,6 +19,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -36,14 +39,18 @@ import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardInputFactory;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
 
-public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeContribution>{ private final ViewAPIProvider apiProvider;
+public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeContribution>{ 
+	private final ViewAPIProvider apiProvider;
 	private final Style style;
 	private JSlider durationSlider = new JSlider(); //本示例程序中添加了一个JSlider， 一个JComboBox，一个IP地址输入框，一个按钮，和一个图片。
+													//the sample demonstrates a JSlider, a JComboBox, a IP input, a JButton, a JTabbed panel, a JRadioButton, a live IO test, and a ImageIcon
 	private JComboBox<Integer> ioComboBox = new JComboBox<Integer>();
 	private JTextField ipAddress = new JTextField();
 	private JButton resetButton = new JButton();
-//	private JRadioButton radioButton_1 = new JRadioButton();
-//	private JRadioButton radioButton_2 = new JRadioButton();
+	private JButton testButton = new JButton();
+	private JRadioButton radioButton_1 = new JRadioButton();
+	private JRadioButton radioButton_2 = new JRadioButton();
+	private GripperLiveControl liveControl;
 	private static String COBO_KEY = "Select which output to blink:";
 	private static String DIGITAL_OUTPUT_KEY = "--digital_out--";
 	private static String IPADDRESS_KEY = "IP Address: ";
@@ -51,10 +58,15 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 	private static String RESET_KEY = "Reset";
 	
 	private static final ImageIcon LOGO_ICON = new ImageIcon(STProgramNodeContribution.class.getResource("/logo/logo.png"));
+	private static final ImageIcon TOGGER_ICON_ON = new ImageIcon(STProgramNodeContribution.class.getResource("/logo/toggerON.png"));
+	private static final ImageIcon TOGGER_ICON_OFF = new ImageIcon(STProgramNodeContribution.class.getResource("/logo/toggerOFF.png"));
+	private static JButton toggerButton = new JButton(TOGGER_ICON_OFF);
 	private Box tempBox;
 	private Locale locale;
+	private static boolean toggerFlag=false;
+	private static String blowFlag = "tbd";
 	
-	public STProgramNodeView(ViewAPIProvider apiProvider, Style style, Locale locale) { //构造函数
+	public STProgramNodeView(ViewAPIProvider apiProvider, Style style, Locale locale) { //构造函数 //constructor
 		// TODO Auto-generated constructor stub
 		this.apiProvider = apiProvider;
 		this.style = style;
@@ -62,50 +74,23 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 		updateKey();
 	}
 	@Override
-<<<<<<< HEAD
-	public void buildUI(JPanel panel,final ContributionProvider<STProgramNodeContribution> provider) {
-		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
-		ipAddress.setHorizontalAlignment(JTextField.RIGHT);
-		JTabbedPane jTabbedPane = new JTabbedPane();
-		JTextField tf = new JTextField("input your value:");
-		tf.setAlignmentX(Component.LEFT_ALIGNMENT);
-		tf.setHorizontalAlignment(JTextField.RIGHT);
-		tf.setPreferredSize(new Dimension(200,30));
-		tf.setMaximumSize(tf.getPreferredSize());
-		JPanel p2 = new JPanel();
-		JPanel p3 = new JPanel();
-		p2.add(tf);
-		jTabbedPane.add("intruction",p2);
-		jTabbedPane.add("configuration",p3);
-		
-		panel.add(jTabbedPane);
-	}
-	/*@Override
-	public void buildUI(JPanel panel, final ContributionProvider<STProgramNodeContribution> provider) {//Override表示是必须要实现的函数
-		// TODO Auto-generated method stub
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); //设置布局管理器，如果Y_AXIS表示组建从上到下依次排列;还有其他类型例如FlowLayout, BorderLayout, GridLayout.
-//		panel.setLayout(null); //如果希望任意摆放组件位置，使用绝对布局
-		ipAddress.setHorizontalAlignment(JTextField.RIGHT);  //如果是文本，需要靠右; 如果是数字，需要靠左
-		panel.add(createDescription(COBO_KEY)); //添加一个描述行，具体函数申明在下方
-		panel.add(createVerticalSpacing());  //添加Y轴方向空间，值由style实例确定。
-		panel.add(createIOComboBox(ioComboBox, provider)); //添加ComboBox组件，具体函数申明在下方
-//		tempBox = createDurationSlider(durationSlider, 0, 20, provider);   //使用绝对布局方法添加组件
-=======
-	public void buildUI(JPanel panel,final ContributionProvider<STProgramNodeContribution> provider) { //Override表示是必须要实现的函数
+	public void buildUI(JPanel panel,final ContributionProvider<STProgramNodeContribution> provider) { //Override表示是必须要实现的函数//override means function must implement, generate robot script
 		panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));//设置布局管理器，如果Y_AXIS表示组建从上到下依次排列;还有其他类型例如FlowLayout, BorderLayout, GridLayout.
-//		panel.setLayout(null); //如果希望任意摆放组件位置，使用绝对布局
+															   //LayoutManager, Y_AXIS means elements will follow an order from top to down.
+//		panel.setLayout(null); //如果希望任意摆放组件位置，使用绝对布局 //in case of flexible positioning element, AbsoluteLayoutManager is viable option.
 		JPanel p1 = new JPanel();
 		JPanel p2 = new JPanel();
-		ipAddress.setHorizontalAlignment(JTextField.RIGHT); //如果是文本，需要靠右; 如果是数字，需要靠左
+		liveControl = new GripperLiveControl(provider);
+		ipAddress.setHorizontalAlignment(JTextField.RIGHT); //如果是文本，需要靠右; 如果是数字，需要靠左 //in case of text, Right aligned; number, Left aligned;
 		JTabbedPane jTabbedPane = new JTabbedPane();
 		p1.setLayout(new BoxLayout(p1,BoxLayout.Y_AXIS));
+		p2.setLayout(new BoxLayout(p2,BoxLayout.Y_AXIS));
 		p1.add(createSpacer(0, 20));
-		p1.add(createDescription(COBO_KEY));  //添加一个描述行，具体函数申明在下方
-		p1.add(createVerticalSpacing()); //添加Y轴方向空间，值由style实例确定。
-		p1.add(createIOComboBox(ioComboBox, provider)); //添加ComboBox组件，具体函数申明在下方
+		p1.add(createDescription(COBO_KEY));  //添加一个描述行，具体函数申明在下方 //create a description box
+		p1.add(createVerticalSpacing()); //添加Y轴方向空间，值由style实例确定。 //create a Y direction 
+		p1.add(createIOComboBox(ioComboBox, provider)); //添加ComboBox组件，具体函数申明在下方 //create a combobox
 		
-//		tempBox = createDurationSlider(durationSlider, 0, 20, provider);   
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
+//		tempBox = createDurationSlider(durationSlider, 0, 20, provider);   //使用绝对布局方法添加组件 //using absoluteLayoutManager example
 //		tempBox.setBounds(40, 120, 300, 30);
 //		panel.add(tempBox);
 //		tempBox = createIOComboBox(ioComboBox, provider);
@@ -114,64 +99,98 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 //		tempBox = createIcon(LOGO_ICON);
 //		tempBox.setBounds(360, 20, 200, 50);
 //		panel.add(tempBox);
-<<<<<<< HEAD
-		panel.add(createVerticalSpacing());
-		panel.add(createDescription(DURA_KEY));
-		panel.add(createVerticalSpacing());
-		panel.add(createDurationSlider(durationSlider, 0, 10, provider));
-		panel.add(createVerticalSpacing());
-		panel.add(createLabelInputField(IPADDRESS_KEY, ipAddress, new MouseAdapter() {  //添加鼠标按钮事件触发
-=======
 		
 		p1.add(createVerticalSpacing());
 		p1.add(createDescription(DURA_KEY));
 		p1.add(createVerticalSpacing());
-		p1.add(createDurationSlider(durationSlider, 0, 10, provider));  //使用绝对布局方法添加组件
+		p1.add(createDurationSlider(durationSlider, 0, 10, provider));  
 		p1.add(createVerticalSpacing());
-		p1.add(createLabelInputField(IPADDRESS_KEY, ipAddress, new MouseAdapter() {  //添加鼠标按钮事件触发
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
+		/*p1.add(createLabelInputField(IPADDRESS_KEY, ipAddress, new MouseAdapter() {  //添加鼠标按钮事件触发 //add Mouse listener
 			public void mousePressed(MouseEvent e) {
 				KeyboardTextInput keyboardInput = provider.get().getKeyboardForIpAddress(); //启动IP地址键盘，具体函数在contribution中申明 
 				keyboardInput.show(ipAddress,provider.get().getCallbackForIpAddress()); //调用回调函数
 			}
-		}));
-<<<<<<< HEAD
-		panel.add(createVerticalSpacing());
-		panel.add(createButton(RESET_KEY, resetButton, provider, new ActionListener() {  //添加按钮的鼠标按下时间触发，并调用在contribution中申明的onResetClicked函数
-=======
+		}));*/
 		p1.add(createVerticalSpacing());
 		p1.add(createButton(RESET_KEY, resetButton, provider, new ActionListener() {  //添加按钮的鼠标按下时间触发，并调用在contribution中申明的onResetClicked函数
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
 			public void actionPerformed(ActionEvent e) {
 				provider.get().onResetClicked();
-				System.out.println("reset button being clicked!!!");
+				System.out.println("Reset button being clicked!!!");
 			}
 		}));
-//		panel.add(createVerticalSpacing());
-//		panel.add(createRatioButton("radio_option_1", radioButton_1)); //增加单选框示例
-//		panel.add(createVerticalSpacing());
-//		panel.add(createRatioButton("radio_option_2", radioButton_2));
-//		
-//		ButtonGroup group = new ButtonGroup(); //单选框的互斥逻辑需要设立ButtonGroup
-//		group.add(radioButton_1);
-//		group.add(radioButton_2);
-<<<<<<< HEAD
-
-		panel.add(createSpacer(0, 100));
-		panel.add(createIcon(LOGO_ICON)); //面板添加图片示例
-	}*/
-=======
 		
 		p1.add(createSpacer(0, 100));
-		p1.add(createIcon(LOGO_ICON));  //面板添加图片示例
-		JLabel jLabel = new JLabel("This tab is left intentionally for adding new element!");
-		p2.add(jLabel);
-		jTabbedPane.add("intruction_demo",p1);
-		jTabbedPane.add("configuration_vide",p2);
+		p1.add(createIcon(LOGO_ICON));  //面板添加图片示例 //adding a ICON
+		p1.add(createVerticalSpacing());
+		/*p1.add(createToggerButton(toggerButton, provider, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				if (toggerFlag==false) {
+					toggerButton.setIcon(TOGGER_ICON_ON);
+					toggerFlag = true;
+					System.out.println("toggerButton swith to ON");
+				}else if (toggerFlag == true) {
+					toggerButton.setIcon(TOGGER_ICON_OFF);
+					toggerFlag = false;
+					System.out.println("toggerButton switch to OFF");
+				}
+			}
+		}));*/
+//		JLabel jLabel = new JLabel("This tab is left intentionally for adding new element!");
+		JLabel jLabel_1 = new JLabel("ATTENTION!!! ");
+		JLabel jLabel_2 = new JLabel("On real robot user has to set robot POWER_ON before clicking Test button.");
+		p2.add(createVerticalSpacing());
+		p2.add(jLabel_1);
+		p2.add(jLabel_2);
+		p2.add(createVerticalSpacing());
+		p2.add(createVerticalSpacing());
+		p2.add(createRatioButton("AIR BLOW ON", radioButton_1, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				provider.get().onRadioSelected("on");
+				System.out.println("AIR BLOW ON is selectec!");
+				blowFlag = "on";
+			}
+		})); //增加单选框示例 //example of adding radioButton
+		p2.add(createVerticalSpacing());
+		p2.add(createRatioButton("AIR BLOW OFF", radioButton_2,new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				provider.get().onRadioSelected("off");
+				System.out.println("AIR BLOW OFF is selected!");
+				blowFlag = "off";
+			}
+		}));
+		
+		ButtonGroup group = new ButtonGroup(); //单选框的互斥逻辑需要设立ButtonGroup// a ButtonGroup is needed for RadioButton
+		group.add(radioButton_1);
+		group.add(radioButton_2);
+		
+		p2.add(createSpacer(0, 100));
+		p2.add(createButton("Test", testButton, provider, new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("Test button being clicked!!!");
+				if(blowFlag == "on") {
+					liveControl.testBlowON();
+				}else if(blowFlag == "off") {
+					liveControl.testBlowOFF();
+				}
+			}
+		}));
+		
+		jTabbedPane.add("CONFIG_static",p1);
+		jTabbedPane.add("TEST_live",p2);
 		
 		panel.add(jTabbedPane);
 	}
->>>>>>> c6ead1cb68aaa67e1f80e87d19552b2f7c126334
 
 
 	public void setIOComBoxItems(Integer[] items) { //ComboBox菜单设置下拉选项的函数,用于Contribution中的[Override]OpenView函数使用
@@ -256,17 +275,39 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 //		inputField.setBackground(Color.GREEN);//设置背景颜色
 		horizontalBox.add(jLabel);//将组件放入box容器
 		horizontalBox.add(inputField);
-		return horizontalBox;
+		return horizontalBox; 
 	}
 	private Box createButton(String label, final JButton button, 
 			final ContributionProvider<STProgramNodeContribution> provider, 
 			ActionListener actionListener) { //创建按钮 
 		Box buttonBox = Box.createHorizontalBox();
 		buttonBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		button.addActionListener(actionListener);;//添加事件监听器
+		button.addActionListener(actionListener);//添加事件监听器
 		button.setText(label);
+		Font f = new Font("Arial", Font.BOLD, button.getFont().getSize()+4);
+		button.setFont(f);
+		button.setPreferredSize(new Dimension(120,60));
+		button.setMaximumSize(button.getPreferredSize());
 		button.setEnabled(true); //使能按钮
+		buttonBox.add(createSpacer(400, 0));
 		buttonBox.add(button); //将组件放入box容器
+		return buttonBox;
+	}
+	private Box createToggerButton(final JButton button, 
+			final ContributionProvider<STProgramNodeContribution> provider,
+			ActionListener actionListener) {
+		TOGGER_ICON_OFF.setImage(TOGGER_ICON_OFF.getImage().getScaledInstance(110, 52, Image.SCALE_DEFAULT));
+		TOGGER_ICON_ON.setImage(TOGGER_ICON_ON.getImage().getScaledInstance(110, 52, Image.SCALE_DEFAULT));
+		Box buttonBox = Box.createHorizontalBox();
+		buttonBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		button.addActionListener(actionListener);
+//		iconON.
+//		button.setSize(110, 52);
+		button.setPreferredSize(new Dimension(110,52));
+		button.setMaximumSize(button.getPreferredSize());
+		button.setEnabled(true);
+		button.setBorderPainted(false);
+		buttonBox.add(button);
 		return buttonBox;
 	}
 	private Box createIcon(final ImageIcon image) {//创建图片
@@ -279,12 +320,20 @@ public class STProgramNodeView implements SwingProgramNodeView<STProgramNodeCont
 		box.add(pic);//将JLabel放入box容器
 		return box;
 	}
-	private Box createRatioButton(String label, final JRadioButton jRadioButton) {//创建单选按钮
+	private Box createRatioButton(String label, final JRadioButton jRadioButton,
+			ActionListener actionListener) {//创建单选按钮
 		Box box = Box.createHorizontalBox();
 		box.setAlignmentX(Component.LEFT_ALIGNMENT);
 		jRadioButton.setText(label);//添加描述
+		jRadioButton.addActionListener(actionListener);
 		box.add(jRadioButton);//将组件放入box容器
 		return box;
+	}
+	public void updateLiveControl() {
+		liveControl.openView();
+	}
+	public void stopLiveControl() {
+		liveControl.closeView();
 	}
 	private Component createHorizontalSpacing() {//根据style创建指定尺寸的x轴隔断
 		return Box.createRigidArea(new Dimension(style.getHorizontalSpacing(),0));
